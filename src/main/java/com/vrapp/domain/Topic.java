@@ -1,29 +1,49 @@
 package com.vrapp.domain;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.*;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table
-public class Topic implements Serializable{
+public class Topic implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int t_id;
-	
+
+	@NotBlank(message = "please enter a topic name")
 	private String topicName;
-	private Timestamp topicDuration;
-	
+	private LocalDateTime topicDuration;
+	private LocalDateTime createdAt;
+
+	@Version
+	private LocalDateTime modifiedAt;
+
+	@PrePersist
+	protected void onCreate() {
+		this.setCreatedAt(LocalDateTime.now());
+		this.modifiedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.modifiedAt = LocalDateTime.now();
+	}
+
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="c_id")
+	@JoinColumn(name = "c_id")
 	private Course course;
+	
+	public Topic(){}
 
 	public int getT_id() {
 		return t_id;
@@ -41,11 +61,11 @@ public class Topic implements Serializable{
 		this.topicName = topicName;
 	}
 
-	public Timestamp getTopicDuration() {
+	public LocalDateTime getTopicDuration() {
 		return topicDuration;
 	}
 
-	public void setTopicDuration(Timestamp topicDuration) {
+	public void setTopicDuration(LocalDateTime topicDuration) {
 		this.topicDuration = topicDuration;
 	}
 
@@ -81,10 +101,34 @@ public class Topic implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Topic [t_id=" + t_id + ", topicName=" + topicName + ", topicDuration=" + topicDuration + "]";
+		return "Topic [t_id=" + t_id + ", topicName=" + topicName + ", topicDuration=" + topicDuration + ", createdAt="
+				+ createdAt + ", modifiedAt=" + modifiedAt + ", course=" + course + "]";
 	}
-	
-	
-	
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getModifiedAt() {
+		return modifiedAt;
+	}
+
+	public void setModifiedAt(LocalDateTime modifiedAt) {
+		this.modifiedAt = modifiedAt;
+	}
+
+	public Topic(int t_id, String topicName, LocalDateTime topicDuration, LocalDateTime createdAt,
+			LocalDateTime modifiedAt, Course course) {
+		this.t_id = t_id;
+		this.topicName = topicName;
+		this.topicDuration = topicDuration;
+		this.createdAt = createdAt;
+		this.modifiedAt = modifiedAt;
+		this.course = course;
+	}
 
 }

@@ -25,16 +25,8 @@ public class UserController {
 			return new ResponseEntity<User>(userService.save(user), HttpStatus.CREATED);
 		}
 		
-		//get user by username	
-		@RequestMapping(value = "{userName}", method = RequestMethod.GET)
-		public ResponseEntity<User> getByUserName(@PathVariable("userName") String userName) throws Exception {
-			//logger.info("Received request to find the user with username "+userName);
-			if (!userName.contains(".com")) {
-				userName += ".com";
-			}
-
-			return new ResponseEntity<User>(userService.findUserByName(userName), HttpStatus.OK);
-		}
+		
+		
 
 		
 }
